@@ -66,6 +66,7 @@ const images = [
 ];
 
 const listElem = document.querySelector('.gallery');
+let instance;
 
 function getListElemMrkup(image) {
  return `<li class="gallery-item">
@@ -93,10 +94,28 @@ listElem.addEventListener("click", ev => {
     ev.preventDefault();
     const isImageClick = ev.target.nodeName === "IMG";
     // console.log(isImageClick);
-    if (isImageClick) {console.log(ev.target.dataset.source) };
-    return;  
+  if (isImageClick) {
+    openModal(ev.target.dataset.source);
+  }; 
 })
 
+function openModal(imageSrc) {
+  instance = basicLightbox.create(`
+    <img src=${imageSrc} width="800" height="600">
+`, {
+   onShow: (instance) => window.addEventListener('keydown', handleCloseModal),
+   onClose: (instance) => window.removeEventListener('keydown', handleCloseModal)
+})
 
+  instance.show();
+}
 
-// console.log(listImages);
+function closeModal() {
+  instance.close();
+}
+
+function handleCloseModal(ev) {
+  if (ev.code === 'Escape') { 
+    closeModal();
+  }
+}
